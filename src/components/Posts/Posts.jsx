@@ -19,6 +19,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Container from '@material-ui/core/Container';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import { fetchPosts, setPost } from '../../store/actions';
 import { pushPost } from '../../api/posts';
@@ -29,6 +31,10 @@ const useStyles = makeStyles({
   },
 });
 
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 const Posts = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -37,9 +43,15 @@ const Posts = () => {
   const posts = useSelector(state => state.posts.fetchedPosts);
   const [inputTitle, setInputTitle] = useState('');
   const [inputText, setInputText] = useState('');
+  const [isPublished, setPublishedStatus] = useState(false);
+  const [hasError, toggleError] = useState(false);
 
   const handleChange = (event) => {
     const { id, value } = event.target;
+
+    if (hasError) {
+      toggleError(false);
+    }
 
     switch (id) {
       case 'title':
@@ -55,13 +67,18 @@ const Posts = () => {
 
   const addPost = async() => {
     try {
-      const post = await pushPost({
+      await pushPost({
         title: inputTitle,
         body: inputText,
         userId,
       });
+      setInputText('');
+      setInputTitle('');
+      setPublishedStatus(true);
 
-      console.log(post);
+      setTimeout(() => {
+        setPublishedStatus(false);
+      }, 4000);
     } catch (error) {
       throw new Error(error);
     }
@@ -80,6 +97,12 @@ const Posts = () => {
   };
 
   const handleAdd = () => {
+    if (!inputText || !inputTitle) {
+      toggleError(true);
+
+      return;
+    }
+
     addPost();
     handleClose();
   };
@@ -98,6 +121,13 @@ const Posts = () => {
         <Button variant="outlined" color="primary" onClick={handleClickOpen}>
           Add new
         </Button>
+        <Snackbar
+          open={isPublished}
+        >
+          <Alert severity="success">
+            Post was published!
+          </Alert>
+        </Snackbar>
         <Dialog
           open={open}
           onClose={handleClose}
@@ -115,6 +145,7 @@ const Posts = () => {
               label="Title"
               type="text"
               onChange={handleChange}
+              error={hasError}
             />
             <DialogContentText>
               Write here the text of your post
@@ -125,6 +156,7 @@ const Posts = () => {
               label="Text"
               type="text"
               onChange={handleChange}
+              error={hasError}
             />
           </DialogContent>
           <DialogActions>

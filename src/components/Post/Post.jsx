@@ -47,6 +47,7 @@ const Post = () => {
   const [open, setOpen] = useState(false);
   const [inputTitle, setInputTitle] = useState('');
   const [inputText, setInputText] = useState('');
+  const [hasError, toggleError] = useState(false);
 
   useEffect(() => {
     if (!comments.length) {
@@ -79,19 +80,25 @@ const Post = () => {
       default:
         break;
     }
+
+    toggleError(false);
   };
 
   const handleSubmit = () => {
-    if (inputTitle || inputText) {
+    if (inputTitle && inputText) {
       dispatch(editPost({
         id: post.id,
         title: inputTitle,
         body: inputText,
         userId: post.userId,
       }));
-    }
 
-    handleClose();
+      setInputTitle('');
+      setInputText('');
+      handleClose();
+    } else {
+      toggleError(true);
+    }
   };
 
   return (
@@ -127,6 +134,7 @@ const Post = () => {
                 label="Title"
                 type="text"
                 onChange={handleChange}
+                error={hasError}
               />
               <DialogContentText>
                 Write here the text of your post
@@ -137,6 +145,7 @@ const Post = () => {
                 label="Text"
                 type="text"
                 onChange={handleChange}
+                error={hasError}
               />
             </DialogContent>
             <DialogActions>

@@ -64,7 +64,7 @@ export function deletePost(postId) {
   return async(dispatch) => {
     const deletedPost = await deletePostFromServer(postId);
 
-    dispatch({ type: DELETE_POST, payload: deletePost });
+    dispatch({ type: DELETE_POST, payload: deletedPost });
   };
 }
 
@@ -73,7 +73,5 @@ export function editPost(data) {
     const editedPost = await editPostInServer(data);
 
     dispatch({ type: EDIT_POST, payload: editedPost });
-
-    console.log(editedPost);
   };
 }
