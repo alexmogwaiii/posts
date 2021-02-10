@@ -15,9 +15,15 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import { Container, Grid } from '@material-ui/core';
 import { deletePost, fetchComments, editPost } from '../../store/actions';
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -48,6 +54,8 @@ const Post = () => {
   const [inputTitle, setInputTitle] = useState('');
   const [inputText, setInputText] = useState('');
   const [hasError, toggleError] = useState(false);
+  const [isChanges, setChangeStatus] = useState(false);
+  const [isDeleted, setDeletedStatus] = useState(false);
 
   useEffect(() => {
     if (!comments.length) {
@@ -57,9 +65,15 @@ const Post = () => {
 
   const deletePostHandler = () => {
     dispatch(deletePost(post.id));
+    setDeletedStatus(true);
+
+    setTimeout(() => {
+      setDeletedStatus(false);
+    }, 4000);
   };
 
   const handleClose = () => {
+    toggleError(false);
     setOpen(false);
   };
 
@@ -96,6 +110,12 @@ const Post = () => {
       setInputTitle('');
       setInputText('');
       handleClose();
+
+      setChangeStatus(true);
+
+      setTimeout(() => {
+        setChangeStatus(false);
+      }, 4000);
     } else {
       toggleError(true);
     }
@@ -110,6 +130,15 @@ const Post = () => {
         <Typography>
           {post.body}
         </Typography>
+        <Snackbar
+          open={isChanges || isDeleted}
+        >
+          <Alert severity="success">
+            {isChanges
+              ? 'Post was edited'
+              : 'Post was deleted'}
+          </Alert>
+        </Snackbar>
         <div className={classes.buttons}>
           <ButtonGroup color="primary">
             <Button onClick={handleClickOpen}>
@@ -117,47 +146,47 @@ const Post = () => {
             </Button>
             <Button onClick={deletePostHandler}>Delete</Button>
           </ButtonGroup>
-          <Dialog
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="form-dialog-title"
-            maxWidth="xl"
-          >
-            <DialogTitle id="form-dialog-title">Edit post</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                Write here the title of your post
-              </DialogContentText>
-              <TextField
-                margin="dense"
-                id="title"
-                label="Title"
-                type="text"
-                onChange={handleChange}
-                error={hasError}
-              />
-              <DialogContentText>
-                Write here the text of your post
-              </DialogContentText>
-              <TextField
-                margin="dense"
-                id="text"
-                label="Text"
-                type="text"
-                onChange={handleChange}
-                error={hasError}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={handleSubmit} color="primary">
-                Add
-              </Button>
-            </DialogActions>
-          </Dialog>
         </div>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="form-dialog-title"
+          maxWidth="xl"
+        >
+          <DialogTitle id="form-dialog-title">Edit post</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Write here the title of your post
+            </DialogContentText>
+            <TextField
+              margin="dense"
+              id="title"
+              label="Title"
+              type="text"
+              onChange={handleChange}
+              error={hasError}
+            />
+            <DialogContentText>
+              Write here the text of your post
+            </DialogContentText>
+            <TextField
+              margin="dense"
+              id="text"
+              label="Text"
+              type="text"
+              onChange={handleChange}
+              error={hasError}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleSubmit} color="primary">
+              Add
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Container>
       <List className={classes.root}>
         {comments.map(comment => (

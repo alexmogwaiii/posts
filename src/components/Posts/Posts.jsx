@@ -93,6 +93,7 @@ const Posts = () => {
   };
 
   const handleClose = () => {
+    toggleError(false);
     setOpen(false);
   };
 
