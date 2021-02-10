@@ -4,7 +4,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './store/index';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <Provider store={store}>
@@ -15,5 +14,3 @@ ReactDOM.render(
   ,
   document.getElementById('root'),
 );
-
-reportWebVitals();
