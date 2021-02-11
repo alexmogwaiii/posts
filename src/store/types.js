@@ -1,0 +1,12 @@
+export const FETCH_USERS = 'USERS/LOAD_USERS';
+export const SET_USER_ID = 'USERS/SET_USER_ID';
+
+export const FETCH_POSTS = 'POSTS/LOAD_POSTS';
+export const SET_POST = 'POSTS/SET_POST_ID';
+export const EDIT_POST = 'POSTS/EDIT_POST';
+export const DELETE_POST = 'POSTS/DELETE_POST';
+
+export const SHOW_LOADER = 'APP/SHOW_LOADER';
+export const HIDE_LOADER = 'APP/HIDE_LOADER';
+
+export const FETCH_COMMENTS = 'COMMENTS/LOAD_COMMENTS';
